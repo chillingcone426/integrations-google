@@ -70,6 +70,7 @@ The `proxy` Worker sits in front of the others: callers authenticate against the
 | [`proxy/`](./proxy) | Shared auth gate and router. Forwards requests for known hosts to sibling Workers via service bindings; everything else falls through to a public `fetch()`. |
 | [`fivem/`](./fivem) | Looks up a FiveM server by ID and resolves a Discord snowflake to a player on that server. |
 | [`bloxlink/`](./bloxlink) | Resolves a Discord user to their linked Roblox account via Bloxlink, with a KV-backed cache. |
+| [`googledocs/`](./googledocs) | Scaffold for writing ticket data to a Google Sheet (placeholder only; API calls not implemented yet). |
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -98,6 +99,7 @@ New integrations are picked up automatically — no workflow edits needed.
 | `proxy` | `PROXY_AUTH_KEY` | Shared token expected in that header. |
 | `fivem` | `FIVEM_AUTH_KEY` | Token expected in the `Authorization` header. |
 | `bloxlink` | `BLOXLINK_AUTH_KEY` | Token expected in the `X-Tickets-Auth` header. |
+| `googledocs` | `GOOGLEDOCS_AUTH_KEY` | Token expected in the `X-Tickets-Auth` header. |
 
 `SENTRY_DSN` for each Worker is configured in its `wrangler.toml` under `[vars]`.
 
