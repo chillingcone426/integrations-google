@@ -17,7 +17,7 @@ jobs:
       integrations: ${{ steps.find.outputs.integrations }}
     steps:
       - id: find
-        run: echo 'integrations=["fivem"]' >> "$GITHUB_OUTPUT"
+        run: echo 'integrations=["googledocs"]' >> "$GITHUB_OUTPUT"
 
   deploy:
     name: Deploy ${{ matrix.integration }}
