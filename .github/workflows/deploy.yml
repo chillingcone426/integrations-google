@@ -11,36 +11,28 @@ concurrency:
 
 jobs:
   discover:
-    name: Discover integrations
+    name: Select integration
     runs-on: ubuntu-latest
     outputs:
       integrations: ${{ steps.find.outputs.integrations }}
     steps:
-      - uses: actions/checkout@v4
       - id: find
-        shell: bash
-        run: |
-          integrations=$(find . -mindepth 2 -maxdepth 2 -name wrangler.toml -not -path './.github/*' -printf '%h\n' | sed 's|^\./||' | jq -R -s -c 'split("\n") | map(select(length > 0))')
-          echo "Discovered integrations: $integrations"
-          echo "integrations=$integrations" >> "$GITHUB_OUTPUT"
+        run: echo 'integrations=["fivem"]' >> "$GITHUB_OUTPUT"
 
   deploy:
     name: Deploy ${{ matrix.integration }}
     needs: discover
-    if: needs.discover.outputs.integrations != '[]' && needs.discover.outputs.integrations != ''
     runs-on: ubuntu-latest
     strategy:
-      fail-fast: false
       matrix:
         integration: ${{ fromJson(needs.discover.outputs.integrations) }}
+
     steps:
       - uses: actions/checkout@v4
 
       - uses: actions/setup-node@v4
         with:
           node-version: "20"
-          cache: npm
-          cache-dependency-path: ${{ matrix.integration }}/package-lock.json
 
       - name: Install dependencies
         working-directory: ${{ matrix.integration }}
