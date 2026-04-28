@@ -12,4 +12,9 @@ SENTRY_DSN = "https://f7d1718105706ab2e6f4402d4bc7b802@sentry.tkts.bot/13"
 # Secrets (set via `wrangler secret put <NAME>`):
 #   GOOGLEDOCS_AUTH_KEY — token expected in the X-Tickets-Auth header
 #   GOOGLEDOCS_SPREADSHEET_ID — target Google Sheets spreadsheet ID
-#   GOOGLEDOCS_SERVICE_ACCOUNT_JSON — service account JSON for Google APIs
+#   GOOGLE_SERVICE_ACCOUNT_EMAIL — Google service account email
+#   GOOGLE_PRIVATE_KEY — Google service account private key (\n escaped)
+#   RANKBLOX_TICKETS_API_SECRET — token sent to the RankBlox ticket bot API
+# Optional vars/secrets:
+#   GOOGLEDOCS_SHEET_TAB — sheet tab to append to (default: Tickets)
+#   RANKBLOX_TICKETS_API_URL — base URL for the RankBlox ticket bot API
