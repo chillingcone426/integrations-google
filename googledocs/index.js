@@ -10,6 +10,7 @@ const GOOGLE_WRITE_DEBOUNCE_MS = 750;
 const GOOGLE_WRITE_MIN_INTERVAL_MS = 1500;
 const BOT_API_URL_HEADER = "X-Tickets-Bot-Api-Url";
 const BOT_API_SECRET_HEADER = "X-Tickets-Bot-Api-Secret";
+const PRIVACY_POLICY_PATHS = new Set(["/privacy", "/privacy-policy"]);
 const TICKET_COLUMNS = 11;
 const TICKET_HEADERS = [
   "Ticket ID",
@@ -44,6 +45,47 @@ function jsonResponse(status, body) {
 
 function errorResponse(status, message) {
   return jsonResponse(status, { error: message });
+}
+
+function privacyPolicyResponse() {
+  const body = [
+    "Privacy Policy",
+    "",
+    "Last updated: 2026-04-28",
+    "",
+    "This worker processes ticket lifecycle events for support tickets.",
+    "",
+    "Information used:",
+    "- Discord ticket and channel IDs",
+    "- Discord user IDs tied to ticket actions",
+    "- Guild IDs and ticket status details",
+    "- Timestamps for opened, claimed, unclaimed, first reply, close requested, and closed events",
+    "- Optional panel titles and spreadsheet routing settings",
+    "",
+    "How it is used:",
+    "- To record ticket activity",
+    "- To sync ticket status to Google Sheets",
+    "- To coordinate with the ticket bot and related worker services",
+    "",
+    "Sharing:",
+    "- Data is sent only to the configured Google Sheets spreadsheet and configured RankBlox ticket bot services needed to process the ticket",
+    "- The worker does not sell personal data",
+    "",
+    "Retention:",
+    "- Ticket records remain in Google Sheets until you delete them",
+    "- Local worker cache is temporary and may reset when the worker restarts",
+    "",
+    "Contact:",
+    "- For privacy questions, contact the developer @thebeston on Discord or via email at thebeston123@rankblox.com",
+  ].join("\n");
+
+  return new Response(body, {
+    status: 200,
+    headers: {
+      "content-type": "text/plain; charset=utf-8",
+      "cache-control": "public, max-age=3600",
+    },
+  });
 }
 
 function getHeaderValue(request, name) {
@@ -1129,6 +1171,10 @@ async function handleTicketSeedRequest(request, env) {
 
 async function handleRequest(request, env, ctx) {
   const url = new URL(request.url);
+  if (PRIVACY_POLICY_PATHS.has(url.pathname) && (request.method === "GET" || request.method === "HEAD")) {
+    return privacyPolicyResponse();
+  }
+
   if (url.pathname === "/api/tickets" && request.method === "GET") {
     if (!isValidAuthRequest(request, env)) {
       return errorResponse(401, "Invalid auth key");
@@ -1138,7 +1184,7 @@ async function handleRequest(request, env, ctx) {
 
     return jsonResponse(200, {
       ok: true,
-      endpoints: ["/events", "/api/tickets/bootstrap", "/api/tickets/seed"],
+      endpoints: ["/events", "/api/tickets/bootstrap", "/api/tickets/seed", "/privacy-policy"],
       hasSpreadsheet: Boolean(spreadsheetId),
       spreadsheet_id: spreadsheetId,
       sheet_tab: sheetTab,
